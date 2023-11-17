@@ -77,6 +77,7 @@
     <div class="config-form-fields">
         <!-- <button id="submit" class="button">Save data</button> -->
         <base-button>Opslaan</base-button>
+        <router-link to="/config"><link-button>Terug</link-button></router-link>
     </div>
                 
                 
@@ -84,8 +85,13 @@
 </template>
 <script>
 import BaseButton from '../ui/BaseButton.vue'
+import LinkButton from '../ui/LinkButton.vue'
+
 export default {
-  components: { BaseButton },
+  components: {
+    BaseButton,
+    LinkButton
+  },
     setup() {
         
     },

@@ -4,9 +4,11 @@
         <textarea name="sources" id="sources" cols="30" rows="10" class="config-form-fields input-border config-form-input w-fit"></textarea>
     </form>
     <base-button>Opslaan</base-button>
+    <router-link to="/config"><link-button>Terug</link-button></router-link>
 </template>
 <script>
 import BaseButton from '../ui/BaseButton.vue'
+import LinkButton from '../ui/LinkButton.vue';
 
 export default ({
     setup() {
@@ -14,6 +16,7 @@ export default ({
     },
     components: {
         BaseButton,
+        LinkButton
     }
 })
 </script>

@@ -1,9 +1,9 @@
 <template>
     <h1>Header</h1>
     <ul>
-        <link-button><router-link to="/login">Login</router-link></link-button>
-        <link-button><router-link to="/register">Registreer</router-link></link-button>
-        <link-button><router-link to="/config">Configuratie</router-link></link-button>
+        <router-link to="/login"><link-button>Login</link-button></router-link>
+        <router-link to="/register"><link-button>Registreer</link-button></router-link>
+        <router-link to="/config"><link-button>Configuratie</link-button></router-link>
     </ul>
 </template>
 <script>
