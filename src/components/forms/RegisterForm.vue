@@ -1,37 +1,42 @@
 <template>
-    <form class="register-form-fields" @submit.prevent="register">
-        <label for="firstName" class="register-form-label w-fit">Voornaam:</label>
-        <input type="text" name="firstName" id="firstName" v-model.trim="firstName.val" @blur="clearValidity('firstName')">
-        <p class="error" v-if="!firstName.isValid">Voornaam mag niet leeg zijn</p>
+  <alert-modal v-if="showModal">
+    <p class="error" v-if="error">{{ error }}</p>
+    <p class="success" v-if="success">{{ success }}</p>
+    <base-button @click="closeModal">Sluiten</base-button>
+  </alert-modal>
+  <form class="register-form-fields" @submit.prevent="register">
+      <label for="firstName" class="register-form-label w-fit">Voornaam:</label>
+      <input type="text" name="firstName" id="firstName" v-model.trim="firstName.val" @blur="clearValidity('firstName')">
+      <p class="error" v-if="!firstName.isValid">Voornaam mag niet leeg zijn</p>
 
-        <label for="lastName" class="register-form-label w-fit">Achternaam:</label>
-        <input type="text" name="lastName" id="lastName" v-model.trim="lastName.val" @blur="clearValidity('lastName')">
-        <p class="error" v-if="!lastName.isValid">Achternaam mag niet leeg zijn</p>
+      <label for="lastName" class="register-form-label w-fit">Achternaam:</label>
+      <input type="text" name="lastName" id="lastName" v-model.trim="lastName.val" @blur="clearValidity('lastName')">
+      <p class="error" v-if="!lastName.isValid">Achternaam mag niet leeg zijn</p>
 
-        <label for="emailAddress" class="register-form-label w-fit">Email:</label>
-        <input type="email" name="emailAddress" id="emailAddress" v-model.trim="emailAddress.val" @blur="clearValidity('emailAddress')">
-        <p class="error" v-if="!emailAddress.isValid">Geen email adres ingevuld of email adres is leeg</p>
+      <label for="emailAddress" class="register-form-label w-fit">Email:</label>
+      <input type="email" name="emailAddress" id="emailAddress" v-model.trim="emailAddress.val" @blur="clearValidity('emailAddress')">
+      <p class="error" v-if="!emailAddress.isValid">Geen email adres ingevuld of email adres is leeg</p>
 
-        <label for="password" class="register-form-label w-fit">Password:</label>
-        <input type="password" name="password" id="password" v-model.trim="password.val" @blur="clearValidity('password')">
-        <p class="error" v-if="!password.isValid">Wachtwoord is niet ingevuld</p>
-        <p class="error" v-if="!passwordsDoMatch.isValid">Wachtwoord zijn niet gelijk</p>
+      <label for="password" class="register-form-label w-fit">Password:</label>
+      <input type="password" name="password" id="password" v-model.trim="password.val" @blur="clearValidity('password')">
+      <p class="error" v-if="!password.isValid">Wachtwoord is niet ingevuld</p>
+      <p class="error" v-if="!passwordsDoMatch.isValid">Wachtwoord zijn niet gelijk</p>
 
-        <label for="passwordRepeat" class="register-form-label w-fit">Herhaal password:</label>
-        <input type="password" name="passwordRepeat" id="passwordRepeat" v-model.trim="passwordRepeat.val" @blur="clearValidity('passwordRepeat')">
-        <p class="error" v-if="!password.isValid">Herhaal wachtwoord is niet ingevuld</p>
+      <label for="passwordRepeat" class="register-form-label w-fit">Herhaal password:</label>
+      <input type="password" name="passwordRepeat" id="passwordRepeat" v-model.trim="passwordRepeat.val" @blur="clearValidity('passwordRepeat')">
+      <p class="error" v-if="!password.isValid">Herhaal wachtwoord is niet ingevuld</p>
 
-        <div class="register-form-buttons">
-          <base-button @click="register">Registreer</base-button>
-          <router-link to="/"><link-button>Terug</link-button></router-link>
-        </div>
-      </form>
-      <p class="error" v-if="error">{{ error }}</p>
-      <p class="success" v-if="success">{{ success }}</p>
+      <div class="register-form-buttons">
+        <base-button @click="register">Registreer</base-button>
+        <router-link to="/"><link-button>Terug</link-button></router-link>
+      </div>
+    </form>
+
 </template>
 <script>
 import BaseButton from '../ui/BaseButton.vue';
 import LinkButton from '../ui/LinkButton.vue';
+import AlertModal from '../gui/AlertModal.vue';
 
 import axios from 'axios';
 
@@ -64,7 +69,21 @@ export default {
             error: '',
             success: '',
             passwordsDoMatch: false,
+            showModal: false,
         }
+    },
+    computed: {
+      doShowModal() {
+        return this.$store.getters.getLoggedInStatus;
+      }
+    },
+    watcher: {
+      doShowModal(value) {
+        if (value) {
+          const showModal = this.$store.getters.getShowModalStatus;
+          this.showModal = showModal;
+        }
+      }
     },
     methods: {
       clearValidity(input) {
@@ -124,13 +143,18 @@ export default {
         } catch (error) {
           this.error = error.message;
         }
-        
 
+        this.$store.commit('toggleShowModalStatus');
+
+      },
+      closeModal() {
+        this.$store.commit('toggleShowModalStatus');
       }
     },
     components: {
         BaseButton,
-        LinkButton
+        LinkButton,
+        AlertModal
     }
 }
 </script>
