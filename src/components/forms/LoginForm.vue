@@ -90,6 +90,7 @@ export default {
             this.$store.commit('storeUserData', data);
             this.$store.commit('setLoggedInStatus', loggedIn);
             
+            this.$router.push('/config');
           } catch(err) {
             this.error = err.message;
           }

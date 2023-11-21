@@ -2,15 +2,15 @@ import { createStore } from 'vuex';
 
 const store = createStore({
     debug: true,
-    state: {
-        user: {
-            name: '',
-            emailAddress: '',
-            accessToken: '',
-            loggedInStatus: false,
-        },
-        modal: {
-            showModal: false,
+    state() {
+        return {
+            user: {
+                name: '',
+                emailAddress: '',
+                accessToken: '',
+                loggedInStatus: false,
+                showModal: false,
+            }
         }
     },
     getters: {
@@ -18,7 +18,7 @@ const store = createStore({
             return state.user.loggedInStatus;
         },
         getShowModalStatus(state) {
-            return state.modal.showModal;
+            return state.user.showModal;
         },
         getUserData(state) {
             return state.user;
@@ -41,14 +41,11 @@ const store = createStore({
             state.user.accessToken = '';
             state.user.emailAddress = '';
         },
-        toggleLoggedInStatus: function(state) {
-            state.user.loggedInStatus = !state.user.loggedInStatus
-        },
         setLoggedInStatus: function(state, loggedIn) {
             state.user.loggedInStatus = loggedIn
         },
-        toggleShowModalStatus: function(state) {
-            state.modal.showModal = !state.modal.showModal;
+        toggleShowModalStatus: function(state, status) {
+            state.user.showModal = status;
         }
     },
 })

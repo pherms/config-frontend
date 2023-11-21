@@ -6,15 +6,15 @@
           <div class="modal-body">
             <slot>
             </slot>
-          </div>
-              <link-button><slot></slot></link-button>
+            <link-button @click="doCloseModal">Sluiten</link-button>
           </div>
         </div>
       </div>
+    </div>
   </transition>
 </template>
 <script>
-import LinkButton from '../ui/LinkButton';
+import LinkButton from '../ui/LinkButton.vue';
 
 export default {
     setup() {
@@ -22,6 +22,14 @@ export default {
     },
     components: {
       LinkButton
+    },
+    methods: {
+      doCloseModal() {
+        this.$emit("close");
+        this.$router.push('/login');
+        // const showModalState = false;
+        // this.$store.commit('toggleShowModalStatus',showModalState);
+      }
     }
 }
 </script>

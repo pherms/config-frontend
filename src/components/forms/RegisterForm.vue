@@ -1,8 +1,7 @@
 <template>
-  <alert-modal v-if="showModal">
+  <alert-modal v-if="showModal" @close="closeModal">
     <p class="error" v-if="error">{{ error }}</p>
     <p class="success" v-if="success">{{ success }}</p>
-    <base-button @click="closeModal">Sluiten</base-button>
   </alert-modal>
   <form class="register-form-fields" @submit.prevent="register">
       <label for="firstName" class="register-form-label w-fit">Voornaam:</label>
@@ -31,7 +30,14 @@
         <router-link to="/"><link-button>Terug</link-button></router-link>
       </div>
     </form>
-
+    <p>Temp overzicht waarden</p>
+    <p>First Name: {{ firstName }}</p>
+    <p>Last Name: {{ lastName }}</p>
+    <p>Email adres: {{ emailAddress }}</p>
+    <p>error: {{ error }}</p>
+    <p>Succes: {{ success }}</p>
+    <p>Passwords match: {{ passwordsDoMatch }}</p>
+    <p>Show Modal: {{ showModal }}</p>
 </template>
 <script>
 import BaseButton from '../ui/BaseButton.vue';
@@ -71,19 +77,6 @@ export default {
             passwordsDoMatch: false,
             showModal: false,
         }
-    },
-    computed: {
-      doShowModal() {
-        return this.$store.getters.getLoggedInStatus;
-      }
-    },
-    watcher: {
-      doShowModal(value) {
-        if (value) {
-          const showModal = this.$store.getters.getShowModalStatus;
-          this.showModal = showModal;
-        }
-      }
     },
     methods: {
       clearValidity(input) {
@@ -144,11 +137,11 @@ export default {
           this.error = error.message;
         }
 
-        this.$store.commit('toggleShowModalStatus');
+        this.showModal = true;
 
       },
       closeModal() {
-        this.$store.commit('toggleShowModalStatus');
+        this.showModal = false;
       }
     },
     components: {
