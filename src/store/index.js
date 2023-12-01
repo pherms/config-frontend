@@ -22,6 +22,9 @@ const store = createStore({
         },
         getUserData(state) {
             return state.user;
+        },
+        getUserAuthKey(state) {
+            return state.user.accessToken;
         }
     },
     mutations: {

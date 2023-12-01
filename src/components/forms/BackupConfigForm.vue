@@ -95,6 +95,29 @@ export default {
     setup() {
         
     },
+    data() {
+        return {
+            authKey: ''
+        }
+    },
+    computed: {
+        isLoggedIn() {
+            return this.$store.getters.getLoggedInStatus;
+        }
+    },
+    watch: {
+        isLoggedIn(value) {
+            if (value) {
+                const userData = this.$store.getters.getUserAuthKey;
+                this.authKey = userData.authKey;
+            }
+        }
+    },
+    methods: {
+        storeConfig() {
+            console.log('store config');
+        }
+    }
 }
 </script>
 <style scoped>

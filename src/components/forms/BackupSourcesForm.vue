@@ -17,6 +17,36 @@ export default ({
     components: {
         BaseButton,
         LinkButton
+    },
+    data() {
+        return {
+            authKey: '',
+            loggedInStatus: false
+        }
+    },
+    computed: {
+        isLoggedIn() {
+            return this.$store.getters.getLoggedInStatus;
+        }
+    },
+    watch: {
+        isLoggedIn(value) {
+            if (value) {
+                const userData = this.$store.getters.getUserAuthKey;
+                this.authKey = userData.authKey;
+                this.loggedInStatus = value
+            }
+        }
+    },
+    methods: {
+        storeConfig() {
+            console.log('store sources');
+        },
+        getSources() {
+          if (this.loggedInStatus) {
+            console.log('Getting sources');
+          }
+        }
     }
 })
 </script>

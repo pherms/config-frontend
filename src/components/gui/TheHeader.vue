@@ -9,9 +9,9 @@
         <!-- <router-link to="/config"><link-button>Configuratie</link-button></router-link> -->
     </ul>
     <div class="loggedinarea">
-        <div class="loggedindata">
-            <p class="loggedindataitem">Pascal Herms</p>
-            <p class="loggedindataitem">pherms@planet.be</p>
+        <div v-if="isLoggedIn" class="loggedindata">
+            <p class="loggedindataitem">{{ name }}</p>
+            <p class="loggedindataitem">{{ emailAddress }}</p>
             <div class="loggedinbutton"><link-button @click="logout">Logout</link-button></div>
         </div>
     </div>
