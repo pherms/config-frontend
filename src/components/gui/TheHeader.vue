@@ -1,21 +1,21 @@
 <template>
     <div class="header">
-    <h1>Header</h1>
-    <ul v-if="!isLoggedIn">
-        <router-link v-if="!isLoggedIn" to="/login"><link-button v-if="!isLoggedIn" >Login</link-button></router-link>
-        <router-link v-if="!isLoggedIn" to="/register"><link-button v-if="!isLoggedIn">Registreer</link-button></router-link>
+        <h1>Header</h1>
+        <ul v-if="!isLoggedIn">
+            <router-link v-if="!isLoggedIn" to="/login"><link-button v-if="!isLoggedIn" >Login</link-button></router-link>
+            <router-link v-if="!isLoggedIn" to="/register"><link-button v-if="!isLoggedIn">Registreer</link-button></router-link>
 
-        
-        <!-- <router-link to="/config"><link-button>Configuratie</link-button></router-link> -->
-    </ul>
-    <div class="loggedinarea">
-        <div v-if="isLoggedIn" class="loggedindata">
-            <p class="loggedindataitem">{{ name }}</p>
-            <p class="loggedindataitem">{{ emailAddress }}</p>
-            <div class="loggedinbutton"><link-button @click="logout">Logout</link-button></div>
+            
+            <!-- <router-link to="/config"><link-button>Configuratie</link-button></router-link> -->
+        </ul>
+        <div class="loggedinarea" v-if="isLoggedIn">
+            <div class="loggedindata">
+                <p class="loggedindataitem">{{ name }}</p>
+                <p class="loggedindataitem">{{ emailAddress }}</p>
+                <div class="loggedinbutton"><link-button @click="logout">Logout</link-button></div>
+            </div>
         </div>
     </div>
-</div>
 </template>
 <script>
 import LinkButton from '../ui/LinkButton.vue';

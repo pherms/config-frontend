@@ -49,8 +49,8 @@ const store = createStore({
         },
         toggleShowModalStatus: function(state, status) {
             state.user.showModal = status;
-        }
-    },
+        },
+    }
 })
 
 export default store;

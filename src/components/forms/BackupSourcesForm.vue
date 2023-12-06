@@ -3,16 +3,41 @@
         <label for="sources" class="input-form-label">Sources om te backuppen</label>
         <textarea name="sources" id="sources" cols="30" rows="10" class="config-form-fields input-border config-form-input w-fit"></textarea>
     </form>
-    <base-button>Opslaan</base-button>
-    <router-link to="/config"><link-button>Terug</link-button></router-link>
+    <p>{{ authKey }}</p>
+    <p>{{ loggedInStatus }}</p>
+    <div class="buttons">
+      <base-button @click="storeConfig">Opslaan</base-button>
+      <router-link to="/config"><link-button>Terug</link-button></router-link>
+    </div>
 </template>
 <script>
 import BaseButton from '../ui/BaseButton.vue'
 import LinkButton from '../ui/LinkButton.vue';
 
+import axios from "axios";
+// import { ref, onMounted } from 'vue';
+import { mapState } from 'vuex';
+
 export default ({
     setup() {
+      // const data = ref(null);
+      // const store = useStore();
+
+      // console.log('Initializing');
+      // const getSources = () => {
         
+      //   console.log('Getting sources');
+        
+      // };
+
+      // onMounted(async () => {
+      //   data.value = await store.dispatch('getUserDataAction');
+      //   getSources();
+      // });
+
+      // return {
+      //   data
+      // }
     },
     components: {
         BaseButton,
@@ -21,13 +46,21 @@ export default ({
     data() {
         return {
             authKey: '',
-            loggedInStatus: false
+            loggedInStatus: false,
+            error: ''
         }
     },
     computed: {
-        isLoggedIn() {
-            return this.$store.getters.getLoggedInStatus;
-        }
+      ...mapState(['userData']),
+      isLoggedIn() {
+          return this.$store.getters.getLoggedInStatus;
+      }
+    },
+    onMounted() {
+      let userData = this.$store.getters.getUserData;
+      console.log(userData);
+      this.authKey = userData.accessToken;
+      this.loggedInStatus = userData.loggedInStatus;
     },
     watch: {
         isLoggedIn(value) {
@@ -39,14 +72,24 @@ export default ({
         }
     },
     methods: {
-        storeConfig() {
-            console.log('store sources');
+        async storeConfig(authKey) {
+          let fd = new FormData();
+          fd.append('sources', this.sources);
+
+            try {
+              const response = await axios.put('http://127.0.0.1:8081/api/v1/sources', fd, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                  authorization: 'Bearer ' + authKey
+                }
+              });
+
+              console.log(response);
+            } catch(err) {
+              this.error = err.message;
+            }
         },
-        getSources() {
-          if (this.loggedInStatus) {
-            console.log('Getting sources');
-          }
-        }
+
     }
 })
 </script>
@@ -79,5 +122,9 @@ export default ({
 .w-fit {
   width: -moz-fit-content;
   width: fit-content;
+}
+
+.buttons {
+  justify-content: space-between;
 }
 </style>
