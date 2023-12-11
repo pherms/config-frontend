@@ -8,9 +8,10 @@
             
             <!-- <router-link to="/config"><link-button>Configuratie</link-button></router-link> -->
         </ul>
+        <p>{{  isLoggedIn }}</p>
         <div class="loggedinarea" v-if="isLoggedIn">
             <div class="loggedindata">
-                <p class="loggedindataitem">{{ name }}</p>
+                <p class="loggedindataitem">{{ fullName }}</p>
                 <p class="loggedindataitem">{{ emailAddress }}</p>
                 <div class="loggedinbutton"><link-button @click="logout">Logout</link-button></div>
             </div>
@@ -26,7 +27,7 @@ export default {
     },
     data() {
         return {
-            name: '',
+            fullName: '',
             emailAddress: ''
         }
     },
@@ -35,23 +36,28 @@ export default {
     },
     computed: {
         isLoggedIn() {
-            return this.$store.getters.getLoggedInStatus;
+            // return this.$store.getters.getLoggedInStatus;
+            return this.$store.getters['users/isLoggedIn'];
         }
     },
     watch: {
         isLoggedIn(value) {
-            if (value) {
-                const userData = this.$store.getters.getUserData;
-                this.name = userData.name;
-                this.emailAddress = userData.emailAddress;
+            if(value) {
+                const user = this.$store.getters['users/userData'];
+                this.fullName = user.fullName;
+                this.emailAddress = user.emailAddress;
+                console.log(user);
+            } else {
+                this.fullName = '';
+                this.emailAddress = '';
             }
         }
     },
     methods: {
         logout() {
-            const loggedInState = false;
-            this.$store.commit('removeUserData');
-            this.$store.commit('setLoggedInStatus', loggedInState);
+            const loggedInState = this.isLoggedIn;
+            this.$store.dispatch('users/logout', loggedInState);
+            this.$router.push('/');
         }
     }
 }

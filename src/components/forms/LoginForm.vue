@@ -1,108 +1,62 @@
 <template>
-    <div class="login-form-fields" v-if="!isLoggedIn">
-        <label for="emailAddress" class="login-form-label w-fit">Email:</label>
-        <input type="email" name="emailAddress" id="emailAddress" v-model="emailAddress">
-        <label for="password" class="login-form-label w-fit">Password:</label>
-        <input type="password" name="password" id="password" v-model="password">
-    </div>
-    <div v-if="isLoggedIn">
-      <p>Email: {{ emailAddress }} Naam: {{ fullName }}</p>
-    </div>
-    <div class="login-form-buttons">
-      <base-button @click="authenticate">{{ loginButtonText }}</base-button>
-      <router-link to="/"><link-button>Terug</link-button></router-link>
-    </div>
-    <div v-if="accessToken">
-      <h5 id="accessToken">{{ accessToken }}</h5>
-    </div>
-    <div v-if="error" class="error">
-      <h5 id="error">{{ error }}</h5>
-    </div>
+  <form @submit.prevent="submitForm">
+    <label for="emailAddress">Login:</label>
+    <input type="email" name="emailAddress" id="emailAddress" v-model="emailAddress.val">
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" v-model="password.val">
+    <base-button>Login</base-button>
+  </form>
 </template>
 <script>
 import BaseButton from '../ui/BaseButton.vue';
-import LinkButton from '../ui/LinkButton.vue';
-
-import axios from "axios";
 
 export default {
-    setup() {
-
+  components: {
+    BaseButton
+  },
+  emits: ['login-user'],
+  data() {
+    return {
+      emailAddress: {
+        val: '',
+        isValid: true
+      },
+      password: {
+        val: '',
+        isValid: true
+      }
+    };
+  },
+  methods: {
+    clearValidity(input) {
+      this[input].isValid = true;
     },
-    data() {
-      return {
-        emailAddress: "",
-        fullName: "",
-        password: "",
-        error: "",
-        accessToken: null,
-        isLoggedIn: false,
-        loginButtonText: 'Login',
+    validateForm() {
+      this.formIsValid = true;
+      if (this.emailAddress.val === '') {
+        this.emailAddress.isValid = false;
+        this.formIsValid = false;
+      }
+      if (this.password.val === '') {
+        this.password.isValid = false;
+        this.formIsValid = false;
+      }
+    },
+    submitForm() {
+      this.validateForm();
+
+      if (!this.formIsValid) {
+        return;
+      }
+
+      const formData = {
+        emailAddress: this.emailAddress.val,
+        password: this.password.val
       };
-    },
-    computed: {
-      didLogin() {
-        return this.$store.getters.getLoggedInStatus;
-      }
-    },
-    watch: {
-      didLogin(value) {
-        if (value) {
-          const userData = this.$store.getters.getUserData;
-          console.log(userData)
-          this.isLoggedIn = userData.loggedInStatus;
-          this.emailAddress = userData.emailAddress;
-          this.fullName = userData.name;
-          this.accessToken = userData.accessToken;
-          this.loginButtonText = 'Logout';
-        } else {
-          this.isLoggedIn = false;
-          this.loginButtonText = 'Login';
-        }
-      }
-    },
-    components: {
-      BaseButton,
-      LinkButton
-    },
-    methods: {
-        authenticate() {
-          const loggedInState = this.$store.getters.getLoggedInStatus;
 
-          if (loggedInState) {
-            this.logout();
-          } else {
-            this.login();
-          }
-        },
-        async login() {
-          try {
-            const response = await axios.post('http://127.0.0.1:8081/api/v1/auth', {
-              emailAddress: this.emailAddress,
-              password: this.password,
-            });
-
-            const data = response.data;
-            const loggedIn = true;
-
-            console.log(data);
-
-            this.$store.commit('storeUserData', data);
-            this.$store.commit('setLoggedInStatus', loggedIn);
-            
-            this.$router.push('/config');
-          } catch(err) {
-            this.error = err.message;
-          }
-        },
-        logout() {
-          const loggedIn = false;
-          this.accessToken = '';
-          this.$store.commit('removeUserData');
-          this.$store.commit('setLoggedInStatus', loggedIn);
-          this.$router.push('/');
-        }
+      this.$emit('login-user', formData);
     }
+  }
 }
 </script>
 <style scoped>
@@ -155,3 +109,5 @@ export default {
   color: red;
 }
 </style>
+
+<!-- Hoe api calls uit te voeren in vue3: https://github.com/adam-cowley/twitch-project/tree/master -->

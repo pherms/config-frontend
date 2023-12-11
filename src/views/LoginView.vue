@@ -1,18 +1,21 @@
 <template>
     <div class="login-form">
         <h2>Login</h2>
-        <login-form></login-form>
+        <login-form @login-user="loginUser"></login-form>
     </div>
 </template>
 <script>
 import LoginForm from '../components/forms/LoginForm.vue';
 
 export default {
-    setup() {
-        
-    },
     components: {
         LoginForm,
+    },
+    methods: {
+        loginUser(data) {
+            this.$store.dispatch('users/login', data);
+            this.$router.replace('/config');
+        }
     }
 }
 </script>
